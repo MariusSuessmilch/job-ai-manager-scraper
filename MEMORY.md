@@ -20,6 +20,11 @@
 - robots.txt-Prüfung + Rate Limiting im PlaywrightClient; Captcha/Sperre → PortalBlockedError, Exit-Code 2, keine Umgehung.
 - Bewerbungsversand nur nach interaktiver Eingabe von exakt „JA SENDEN“ (prepare-application.ts).
 
+## Live-Test Stepstone (2026-06-12)
+- Erfolgreich: 3 echte Anzeigen gescrapt, robots.txt erlaubte die Pfade, kein Captcha (headed Browser, 4 s Rate-Limit, MAX_JOBS_PER_RUN=3).
+- Selektoren (`data-at`-Kandidaten) funktionieren Stand 2026-06-12; Detailseiten lieferten volle Beschreibungen (~2,5–3k Zeichen), Abschnitts-Parser trennte Aufgaben/Anforderungen/Benefits bei allen 3 Anzeigen, Remote-Erkennung („Hybrid/Home-Office möglich“) griff.
+- Scores plausibel differenziert: 78/77 („bewerben“) vs. 63 („prüfen“, Hochschulprojekt-Stelle).
+
 ## Offene Punkte
-- Live-Lauf gegen Stepstone wurde bewusst nicht ausgeführt (kein externer Aufruf in der Session); Selektoren sind Best-Effort und müssen beim ersten echten Lauf ggf. nachjustiert werden.
 - Mock-CV (Jonas Berger) enthält KEIN KI-Manager-IHK-Zertifikat – Parser meldet das korrekt als offene Information.
+- Nur 1. Suchbegriff („KI Manager“) wurde live getestet (Lauf stoppte nach 3 Jobs); übrige Begriffe nutzen denselben URL-Builder.
