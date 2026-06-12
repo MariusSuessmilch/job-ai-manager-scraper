@@ -37,6 +37,7 @@ export const ROLE_NEGATIVE: Signal[] = [
   { label: "Reine Softwareentwickler-Rolle", pattern: /softwareentwickler|software (developer|engineer)\b/i, weight: -6 },
   { label: "Praktikum", pattern: /praktik(um|ant)|intern(ship)?\b/i, weight: -15 },
   { label: "Werkstudentenstelle", pattern: /werkstudent/i, weight: -15 },
+  { label: "Duales Studium / Ausbildungsplatz", pattern: /duales studium|ausbildung(splatz)? zum|studienplatz|trainee/i, weight: -15 },
   { label: "Explizite Junior-Rolle", pattern: /\bjunior\b/i, weight: -8 },
   { label: "Sehr seniorige KI-Führungsrolle", pattern: /(head of ai|chief ai|vp ai|director ai|\b(8|9|10)\+? jahre)/i, weight: -6 },
 ];
