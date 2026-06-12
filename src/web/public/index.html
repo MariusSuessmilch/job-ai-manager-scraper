@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KI-Job-Radar</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%23070b09' stroke='%2352f5a0' stroke-width='2'/%3E%3Cpath d='M16 16 L16 4' stroke='%2352f5a0' stroke-width='2'/%3E%3Ccircle cx='16' cy='16' r='3' fill='%2352f5a0'/%3E%3C/svg%3E">
+</head>
+<body>
+  <div class="scanlines" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <div class="brand">
+      <div class="radar-icon" aria-hidden="true">
+        <div class="radar-ring"></div>
+        <div class="radar-sweep"></div>
+        <div class="radar-dot"></div>
+      </div>
+      <div class="brand-text">
+        <h1>KI-Job-Radar</h1>
+        <p class="subtitle">Bewerbungs-Workflow · Stepstone-Scan · CV-Scoring</p>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <div class="counter" id="header-counter">
+        <span class="mono" id="count-total">0</span> Stellen&ensp;·&ensp;<span class="mono" id="count-scored">0</span> bewertet
+      </div>
+      <div class="live-indicator">
+        <span class="live-dot" id="live-dot"></span>
+        <span id="live-text">verbinde …</span>
+      </div>
+    </div>
+  </header>
+
+  <section class="kpis" id="kpis">
+    <article class="kpi" data-kpi="total">
+      <span class="kpi-label">Gesamt</span>
+      <span class="kpi-value mono" id="kpi-total">–</span>
+      <span class="kpi-foot">Stellen im Radar</span>
+    </article>
+    <article class="kpi kpi-green" data-kpi="bewerben">
+      <span class="kpi-label">Bewerben</span>
+      <span class="kpi-value mono" id="kpi-bewerben">–</span>
+      <span class="kpi-foot">klare Empfehlung</span>
+    </article>
+    <article class="kpi kpi-amber" data-kpi="pruefen">
+      <span class="kpi-label">Prüfen</span>
+      <span class="kpi-value mono" id="kpi-pruefen">–</span>
+      <span class="kpi-foot">genauer ansehen</span>
+    </article>
+    <article class="kpi kpi-dim" data-kpi="ehernicht">
+      <span class="kpi-label">Eher nicht</span>
+      <span class="kpi-value mono" id="kpi-ehernicht">–</span>
+      <span class="kpi-foot">geringe Passung</span>
+    </article>
+    <article class="kpi" data-kpi="avg">
+      <span class="kpi-label">Ø Score</span>
+      <span class="kpi-value mono" id="kpi-avg">–</span>
+      <span class="kpi-foot">von 100 Punkten</span>
+    </article>
+    <article class="kpi" data-kpi="scrape">
+      <span class="kpi-label">Letzter Scrape</span>
+      <span class="kpi-value kpi-value-sm mono" id="kpi-scrape">–</span>
+      <span class="kpi-foot" id="kpi-scrape-date"></span>
+    </article>
+  </section>
+
+  <main class="layout">
+    <section class="panel table-panel">
+      <div class="panel-head">
+        <h2>Stellenübersicht</h2>
+        <div class="toolbar">
+          <input type="search" id="search" placeholder="Suche: Titel, Firma, Ort …" autocomplete="off">
+          <select id="filter-recommendation" aria-label="Filter Empfehlung">
+            <option value="">Empfehlung: alle</option>
+            <option value="bewerben">bewerben</option>
+            <option value="prüfen">prüfen</option>
+            <option value="eher nicht bewerben">eher nicht bewerben</option>
+          </select>
+          <select id="filter-status" aria-label="Filter Status">
+            <option value="">Status: alle</option>
+          </select>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table id="jobs-table">
+          <thead>
+            <tr>
+              <th class="th-chevron"></th>
+              <th class="sortable th-score" data-sort="score">Score</th>
+              <th class="sortable" data-sort="recommendation">Empfehlung</th>
+              <th class="sortable th-title" data-sort="title">Jobtitel</th>
+              <th class="sortable" data-sort="company">Unternehmen</th>
+              <th class="sortable" data-sort="location">Standort</th>
+              <th class="sortable" data-sort="status">Status</th>
+              <th class="th-cv">CV</th>
+            </tr>
+          </thead>
+          <tbody id="jobs-tbody"></tbody>
+        </table>
+        <div class="empty-state" id="table-empty" hidden>
+          <p>Keine Stellen gefunden.</p>
+          <p class="empty-hint">Filter anpassen oder einen neuen Scrape starten: <code>npm run scrape</code></p>
+        </div>
+      </div>
+    </section>
+
+    <aside class="sidebar">
+      <section class="panel">
+        <div class="panel-head"><h2>Score-Verteilung</h2></div>
+        <div class="histogram" id="histogram"></div>
+        <div class="empty-state" id="histogram-empty" hidden><p>Noch keine Bewertungen.</p></div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head"><h2>Bewerbungs-Funnel</h2></div>
+        <div class="funnel" id="funnel"></div>
+      </section>
+
+      <section class="panel feed-panel">
+        <div class="panel-head"><h2>Aktivität</h2></div>
+        <ol class="feed" id="feed"></ol>
+        <div class="empty-state" id="feed-empty" hidden><p>Noch keine Ereignisse.</p></div>
+      </section>
+    </aside>
+  </main>
+
+  <div class="overlay" id="cv-overlay" hidden>
+    <div class="overlay-backdrop" id="cv-backdrop"></div>
+    <div class="overlay-card" role="dialog" aria-modal="true" aria-labelledby="cv-title">
+      <header class="overlay-head">
+        <div>
+          <p class="overlay-kicker">Optimierter Lebenslauf</p>
+          <h3 id="cv-title"></h3>
+        </div>
+        <button class="overlay-close" id="cv-close" aria-label="Schließen">×</button>
+      </header>
+      <div class="overlay-body markdown" id="cv-body"></div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

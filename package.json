@@ -9,6 +9,7 @@
     "score": "tsx src/index.ts score",
     "report": "tsx src/index.ts report",
     "cv": "tsx src/index.ts cv",
+    "web": "tsx src/web/server.ts",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"
   },
