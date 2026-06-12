@@ -25,6 +25,12 @@
 - Selektoren (`data-at`-Kandidaten) funktionieren Stand 2026-06-12; Detailseiten lieferten volle Beschreibungen (~2,5–3k Zeichen), Abschnitts-Parser trennte Aufgaben/Anforderungen/Benefits bei allen 3 Anzeigen, Remote-Erkennung („Hybrid/Home-Office möglich“) griff.
 - Scores plausibel differenziert: 78/77 („bewerben“) vs. 63 („prüfen“, Hochschulprojekt-Stelle).
 
+## Live-Test Formular-Vorbefüllung (2026-06-12)
+- `scripts/prefill-live.ts`: öffnet Top-Job, klickt „Bewerben“, füllt Felder vor, sendet nie ab, Browser bleibt 10 min zur Prüfung offen.
+- Befund: Stepstones „Bewerben“-Button öffnet zuerst ein „Anmelden oder Registrieren“-Modal (E-Mail-first, KEIN Passwortfeld) – das eigentliche Bewerbungsformular liegt hinter einem Account-Login. Die Vorbefüllung selbst funktionierte (E-Mail-Feld wurde gefüllt, Screenshot in data/exports/bewerbung-formular.png).
+- Kein Account mit Mock-Daten registrieren (ToS). Realer Flow: Nutzer loggt sich im offenen Browser selbst ein, danach kann vorbefüllt werden.
+- loginWall-Erkennung initial fehlgeschlagen (suchte nur Passwortfeld) – erweitert um Modal-Text und login-testids.
+
 ## Offene Punkte
 - Mock-CV (Jonas Berger) enthält KEIN KI-Manager-IHK-Zertifikat – Parser meldet das korrekt als offene Information.
 - Nur 1. Suchbegriff („KI Manager“) wurde live getestet (Lauf stoppte nach 3 Jobs); übrige Begriffe nutzen denselben URL-Builder.
