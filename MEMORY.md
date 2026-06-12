@@ -31,6 +31,12 @@
 - Kein Account mit Mock-Daten registrieren (ToS). Realer Flow: Nutzer loggt sich im offenen Browser selbst ein, danach kann vorbefüllt werden.
 - loginWall-Erkennung initial fehlgeschlagen (suchte nur Passwortfeld) – erweitert um Modal-Text und login-testids.
 
+## Web-Hub „KI-Job-Radar“ (2026-06-12, via Subagent)
+- `npm run web` → http://localhost:4317. node:http ohne Framework; DB wird pro Request frisch gelesen → laufende Scrapes erscheinen live (5-s-Polling im Frontend).
+- API: /api/jobs (inkl. cvFile-Zuordnung per Verzeichnisscan cv-job-<id>-*.md), /api/cv/:id, /api/stats, POST /api/jobs/:id/status.
+- Verifiziert per `scripts/verify-web.ts` (fetch + Playwright-Screenshots) — curl und das Preview-MCP-Tool waren in der Session nicht nutzbar (Permission-Denials; Preview-Tool liest ~/.claude/launch.json der Session-cwd, nicht des Projekts, und startete fälschlich „obstmarkt“).
+- Top-10-Tabelle: data/exports/top10-frankfurt.md; optimierte CVs: data/exports/cv-optimiert/ (Generator: scripts/generate-tailored-cvs.ts, nur Profil + Schwerpunkte job-spezifisch, Fakten unverändert).
+
 ## Offene Punkte
 - Mock-CV (Jonas Berger) enthält KEIN KI-Manager-IHK-Zertifikat – Parser meldet das korrekt als offene Information.
 - Nur 1. Suchbegriff („KI Manager“) wurde live getestet (Lauf stoppte nach 3 Jobs); übrige Begriffe nutzen denselben URL-Builder.
