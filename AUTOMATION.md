@@ -50,7 +50,7 @@ Weitere Portale können später als eigene Adapter ergänzt werden, zum Beispiel
 
 1. Der Nutzer gibt einen Lebenslauf an (PDF, DOCX, Markdown oder Text).
 2. Die Software öffnet mit Playwright einen Browser.
-3. Die Software sucht auf Stepstone nach passenden Begriffen („KI Manager", „AI Transformation Manager", „KI Governance" u. a.).
+3. Die Software sucht auf Stepstone nach passenden Begriffen („KI Manager", „AI Transformation Manager", „KI Governance" u. a.). Diese Begriffe sind über `SEARCH_TERMS` in der `.env` konfigurierbar (kommasepariert; leer = eingebaute Standardliste).
 4. Die Software liest Stellenanzeigen aus (Titel, Unternehmen, Standort, Aufgaben, Anforderungen, Benefits).
 5. Die Software vergleicht jede Stelle mit dem Lebenslauf.
 6. Die Software berechnet einen Score von 0 bis 100 – mit Begründung pro Kriterium.
