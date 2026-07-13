@@ -39,12 +39,33 @@ async function clickFirst(page: Page, selectors: string[]): Promise<boolean> {
 const config = loadConfig();
 const profile = await parseCv(process.env.CV_FILE_PATH || config.CV_FILE_PATH);
 const repo = new JobRepository(openDatabase(config.DATABASE_URL));
-const top = repo.listAll().filter((j) => j.score !== null)[0];
-if (!top) {
-  console.error("Keine bewerteten Jobs in der Datenbank. Zuerst `npm run scrape` ausführen.");
-  process.exit(1);
+
+// Optionales Argument --job <id>: konkreten Job statt des Top-Jobs öffnen.
+const args = process.argv.slice(2);
+const jobFlagIndex = args.indexOf("--job");
+let top;
+if (jobFlagIndex !== -1) {
+  const raw = args[jobFlagIndex + 1];
+  const jobId = Number(raw);
+  if (!raw || !Number.isInteger(jobId)) {
+    console.error("Ungültige Job-ID nach --job. Erwartet eine ganze Zahl, z. B. --job 42.");
+    process.exit(1);
+  }
+  top = repo.listAll().find((j) => j.id === jobId);
+  if (!top) {
+    console.error(
+      `Kein Job mit ID ${jobId} gefunden. Verfügbare IDs zeigt \`npm run report\` oder der Web-Hub (\`npm run web\`).`,
+    );
+    process.exit(1);
+  }
+} else {
+  top = repo.listAll().filter((j) => j.score !== null)[0];
+  if (!top) {
+    console.error("Keine bewerteten Jobs in der Datenbank. Zuerst `npm run scrape` ausführen.");
+    process.exit(1);
+  }
 }
-logger.info(`Top-Job (${top.score}/100): ${top.title} – ${top.company}`);
+logger.info(`Job (${top.score}/100): ${top.title} – ${top.company}`);
 logger.info(`URL: ${top.url}`);
 
 // 1. Dossier als Vorbereitung erzeugen
@@ -88,12 +109,15 @@ if (loginWall) {
 }
 
 // 4. Felder vorbereiten – NIEMALS absenden
-const filled = await prefillApplicationForm(formPage, {
-  firstName: "Jonas",
-  lastName: "Berger",
-  email: "jonas.berger@example.de",
-  phone: "+49 170 1234567",
-});
+// Eigene Bewerberdaten aus der .env verwenden, sonst Demodaten (mit Warnung).
+const useOwnData = Boolean(config.applicant.firstName && config.applicant.email);
+const applicant = useOwnData
+  ? config.applicant
+  : { firstName: "Jonas", lastName: "Berger", email: "jonas.berger@example.de", phone: "+49 170 1234567" };
+if (!useOwnData) {
+  logger.warn("Demodaten aktiv — APPLICANT_* in .env setzen für eigene Daten.");
+}
+const filled = await prefillApplicationForm(formPage, applicant);
 
 await formPage.screenshot({ path: "./data/exports/bewerbung-formular.png", fullPage: false });
 logger.info("Screenshot gespeichert: data/exports/bewerbung-formular.png");
