@@ -83,7 +83,7 @@ Du kannst die Bewerbungsvorbereitung von Hand starten (`npm run prefill`) oder e
 ## Tests & Typecheck
 
 ```bash
-npm test            # Vitest: Scoring, CV-Parser, Stepstone-Parser, Config, Setup (32 Tests)
+npm test            # Vitest: Scoring, CV-Parser, Stepstone-Parser, Config, Setup, Export (33 Tests)
 npm run typecheck   # tsc --noEmit
 ```
 
@@ -107,7 +107,7 @@ scripts/
   prefill-live.ts          Bewerbungsformular vorbefüllen (sendet nichts)
 docs/
   bewerben-mit-agent.md    Anleitung: Formulare mit einem Coding-Agenten ausfüllen
-tests/                     Vitest-Tests (Scoring, CV, Parser, Config, Setup)
+tests/                     Vitest-Tests (Scoring, CV, Parser, Config, Setup, Export)
 ```
 
 Für Coding-Agenten (Claude Code u. a.) liegt in [CLAUDE.md](CLAUDE.md) eine kompakte Projekt- und Regel-Referenz; [AGENT.md](AGENT.md) verweist andere Agenten-Tools dorthin.
