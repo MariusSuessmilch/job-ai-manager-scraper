@@ -2,7 +2,7 @@
 
 Diese Datei richtet sich an Coding-Agenten und Agenten-Tools, die nicht automatisch `CLAUDE.md` lesen.
 
-**Die vollständige Referenz steht in [CLAUDE.md](CLAUDE.md)** – Architektur, Kommandos, das Portal-Adapter-Muster und die verbindlichen Agent-Regeln. Vor jeder Änderung in diesem Repo dort Abschnitt 5 („Agent-Regeln") lesen; die Regeln sind bindend (u. a.: niemals ohne wörtliches „JA SENDEN" absenden, kein Captcha-/Login-Bypass, keinen Wert `REQUEST_DELAY_MS` unter 2000).
+**Die vollständige Referenz steht in [CLAUDE.md](CLAUDE.md)** – Architektur, Kommandos, das Portal-Adapter-Muster und die verbindlichen Agent-Regeln. Vor jeder Änderung in diesem Repo dort Abschnitt 5 („Agent-Regeln“) lesen; die Regeln sind bindend (u. a.: niemals ohne wörtliches „JA SENDEN“ absenden, kein Captcha-/Login-Bypass, keinen Wert `REQUEST_DELAY_MS` unter 2000).
 
 ## Quickstart
 

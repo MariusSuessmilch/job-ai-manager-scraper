@@ -72,7 +72,7 @@ Scoring, Speicherung und Reports laufen ohne Änderung weiter.
 
 Diese Regeln gelten ausnahmslos. Sie schützen den Nutzer und die Portale und sind nicht verhandelbar.
 
-- **Niemals automatisch absenden.** Ein Bewerbungsformular wird nur abgeschickt, wenn der Mensch es wörtlich mit „JA SENDEN" bestätigt. Ohne diese wörtliche Bestätigung wird niemals gesendet – auch nicht „zur Sicherheit" oder „als Test".
+- **Niemals automatisch absenden.** Ein Bewerbungsformular wird nur abgeschickt, wenn der Mensch es wörtlich mit „JA SENDEN“ bestätigt. Ohne diese wörtliche Bestätigung wird niemals gesendet – auch nicht „zur Sicherheit“ oder „als Test“.
 - **Keine Captcha- oder Login-Umgehung.** Verlangt das Portal einen Login oder zeigt ein Captcha, wird das ehrlich gemeldet und der Lauf bricht ab. Der Mensch loggt sich selbst im geöffneten Browser ein.
 - **Keine Konto-Registrierung.** Der Agent legt keine Nutzerkonten bei Portalen an und registriert sich nirgends.
 - **`REQUEST_DELAY_MS` nie unter 2000 senken.** Der Standard ist 4000. Niedrigere Werte nur nach ausdrücklicher Nutzerfreigabe und niemals unter 2000.
@@ -108,6 +108,6 @@ Vollständig kommentiert in [.env.example](.env.example). Die wichtigsten:
 
 ## 8. Troubleshooting
 
-- **„Keine Elemente gefunden" auf Stepstone** – Selektor-Drift. `src/portals/stepstone/stepstone.selectors.ts` prüfen und die Kandidaten-Arrays aktualisieren.
+- **„Keine Elemente gefunden“ auf Stepstone** – Selektor-Drift. `src/portals/stepstone/stepstone.selectors.ts` prüfen und die Kandidaten-Arrays aktualisieren.
 - **Captcha oder Blockade** – der Lauf beendet mit Exit-Code 2. Captchas nicht programmatisch lösen. Dem Nutzer raten, mit `ENABLE_HEADLESS=false` manuell zu prüfen oder auf manuelle Dateneingabe + `npm run score` zu wechseln.
 - **SQLite-Locks** – sicherstellen, dass kein zweiter Prozess (z. B. der Web-Hub) einen Schreib-Lock hält, während CLI-Befehle laufen. Web-Hub und schreibende CLI-Befehle nicht gleichzeitig ausführen.

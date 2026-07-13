@@ -58,24 +58,25 @@ npm run prefill  # Bewerbungsformular der bestbewerteten Stelle vorbefüllen (se
 npm run prefill -- --job 36
 ```
 
-Die ID einer Stelle steht in der CSV `data/exports/jobs.csv` (erste Spalte), die `npm run report` und `npm run scrape` miterzeugen. Das Vorbefüllen öffnet einen sichtbaren Browser, füllt erkennbare Felder mit deinen Daten aus der `.env` vor, macht einen Screenshot nach `data/exports/` und **sendet nichts ab**. Details siehe [docs/bewerben-mit-agent.md](docs/bewerben-mit-agent.md).
+Die ID einer Stelle zeigen der Report `data/exports/report.md` (Spalte „ID“), der Web-Hub (`npm run web`, Spalte „#“) und die CSV `data/exports/jobs.csv`. Das Vorbefüllen öffnet einen sichtbaren Browser, füllt erkennbare Felder mit deinen Daten aus der `.env` vor, macht einen Screenshot nach `data/exports/` und **sendet nichts ab**. Details siehe [docs/bewerben-mit-agent.md](docs/bewerben-mit-agent.md).
 
 Ergebnisse:
 
 - `data/jobs.sqlite` – alle Stellen mit Score, Begründung, Status, Muss-/Kann-Kriterien
-- `data/exports/report.md` – Übersichtstabelle + Top-Empfehlungen mit Begründung
+- `data/exports/report.md` – Übersichtstabelle (mit Job-ID) + Top-Empfehlungen mit Begründung
 - `data/exports/jobs.csv` – tabellarischer Export (mit Job-ID)
 
 ## Bewerbungsformulare mit einem Coding-Agenten ausfüllen
 
-Du kannst die Bewerbungsvorbereitung von Hand starten (`npm run prefill`) oder einem Coding-Agenten wie Claude Code überlassen. Der Agent öffnet den Browser, klickt „Bewerben" und füllt die Felder mit deinen Daten vor – abgeschickt wird nie automatisch. Die Schritt-für-Schritt-Anleitung mit kopierbaren Beispiel-Prompts steht in [docs/bewerben-mit-agent.md](docs/bewerben-mit-agent.md).
+Du kannst die Bewerbungsvorbereitung von Hand starten (`npm run prefill`) oder einem Coding-Agenten wie Claude Code überlassen. Der Agent öffnet den Browser, klickt „Bewerben“ und füllt die Felder mit deinen Daten vor – abgeschickt wird nie automatisch. Die Schritt-für-Schritt-Anleitung mit kopierbaren Beispiel-Prompts steht in [docs/bewerben-mit-agent.md](docs/bewerben-mit-agent.md).
 
 ## Grenzen & Regeln
 
 - **Stepstone-Markup ändert sich.** Alle Selektoren liegen zentral in `src/portals/stepstone/stepstone.selectors.ts` (mehrere Kandidaten pro Element). Wenn die Suche keine Treffer-Elemente findet, zuerst dort nachjustieren.
 - **Blockaden werden nicht umgangen.** Bei Captcha oder robots.txt-Sperre bricht der Lauf mit Exit-Code 2 ab; Alternativen stehen in [AUTOMATION.md](AUTOMATION.md).
-- **Bewerbungen werden nie automatisch versendet** – Versand nur nach wörtlicher Bestätigung („JA SENDEN").
+- **Bewerbungen werden nie automatisch versendet** – Versand nur nach wörtlicher Bestätigung („JA SENDEN“).
 - **Keine Umgehung von Login oder Captcha.** Verlangt Stepstone einen Login, meldet das Werkzeug das ehrlich; einloggen tust du selbst im geöffneten Browser.
+- **Keine Konto-Registrierung.** Das Werkzeug legt nie ein Nutzerkonto bei einem Portal an.
 - Das regelbasierte Scoring ist bewusst transparent statt perfekt; für feinere semantische Bewertung einen LLM-Key konfigurieren.
 - Standort- und Remote-Angaben ohne Nutzerpräferenz werden neutral (5/10) bewertet; ohne erkennbares KI-Zertifikat im CV wird dies als offene Information markiert.
 
