@@ -37,6 +37,11 @@
 - Verifiziert per `scripts/verify-web.ts` (fetch + Playwright-Screenshots) — curl und das Preview-MCP-Tool waren in der Session nicht nutzbar (Permission-Denials; Preview-Tool liest ~/.claude/launch.json der Session-cwd, nicht des Projekts, und startete fälschlich „obstmarkt“).
 - Top-10-Tabelle: data/exports/top10-frankfurt.md; optimierte CVs: data/exports/cv-optimiert/ (Generator: scripts/generate-tailored-cvs.ts, nur Profil + Schwerpunkte job-spezifisch, Fakten unverändert).
 
+## Repo-Hygiene (2026-07-13)
+- `.gitignore`-Falle gefixt: `cv/` matchte auch `src/cv/` → der komplette CV-Parser fehlte auf GitHub (Clone: 1 Test-Suite rot, alle CLI-Kommandos kaputt, nur `npm run web` lief). Jetzt `/cv/` (nur Root-Ordner) + `src/cv/` nachcommittet (ba39ce8). Push steht noch aus.
+- Kanonische Arbeitskopie: `~/projects/job-ai-manager-scraper` (mit Daten, node_modules, .env). Ein versehentlicher Zweit-Clone liegt unter `~/Documents/Code/job-ai-manager-scraper` — kann weg.
+- Web-Hub-Verifikation ohne curl (Permission-Denial): `python3` + `urllib` gegen `/api/stats` bzw. `/api/jobs` funktioniert.
+
 ## Offene Punkte
 - Mock-CV (Jonas Berger) enthält KEIN KI-Manager-IHK-Zertifikat – Parser meldet das korrekt als offene Information.
 - Nur 1. Suchbegriff („KI Manager“) wurde live getestet (Lauf stoppte nach 3 Jobs); übrige Begriffe nutzen denselben URL-Builder.
