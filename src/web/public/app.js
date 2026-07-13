@@ -314,6 +314,7 @@
   function rowHtml(job, isNew) {
     const open = state.expanded.has(job.id);
     return `<tr class="job-row ${job.incomplete ? 'row-incomplete' : ''} ${isNew ? 'row-new' : ''}" data-id="${job.id}">
+      <td class="cell-id mono">${job.id}</td>
       <td><button class="chevron-btn ${open ? 'open' : ''}" data-action="toggle" aria-label="Details">${open ? '▾' : '▸'}</button></td>
       <td><span class="score-badge ${scoreClass(job.score)}">${job.score != null ? job.score : '–'}</span></td>
       <td><span class="chip ${chipClass(job.recommendation)}">${esc(job.recommendation || 'unbewertet')}</span></td>
@@ -355,7 +356,7 @@
   }
 
   function detailRowHtml(job) {
-    return `<tr class="detail-row" data-detail="${job.id}"><td colspan="8"><div class="detail-inner">
+    return `<tr class="detail-row" data-detail="${job.id}"><td colspan="9"><div class="detail-inner">
       <div>
         <div class="detail-section">
           <h4>Score-Breakdown</h4>

@@ -21,7 +21,7 @@ Jede gefundene Stelle bekommt einen Score von 0 bis 100, zusammengesetzt aus sec
 | Bewerbungswahrscheinlichkeit | 0–10 | Wie realistisch ist eine erfolgreiche Bewerbung? |
 | Standort-/Arbeitsmodell-Fit | 0–10 | Passt Standort, Remote oder Hybrid zu den eigenen Vorgaben? |
 
-Die Bewertung erfolgt **nicht nur über Keywords**: Signale werden über Titel und Volltext ausgewertet, positive wie negative, und jede Teilnote wird im Ergebnis einzeln begründet. Eine Stelle kann gut abschneiden, auch wenn „KI-Manager" nicht im Titel steht, solange Aufgaben und Anforderungen passen. Optional kann eine LLM-Schnittstelle (OpenAI-kompatibel) für eine noch feinere semantische Bewertung konfiguriert werden.
+Die Bewertung erfolgt **nicht nur über Keywords**: Signale werden über Titel und Volltext ausgewertet, positive wie negative, und jede Teilnote wird im Ergebnis einzeln begründet. Eine Stelle kann gut abschneiden, auch wenn „KI-Manager“ nicht im Titel steht, solange Aufgaben und Anforderungen passen. Optional kann eine LLM-Schnittstelle (OpenAI-kompatibel) für eine noch feinere semantische Bewertung konfiguriert werden.
 
 Empfehlungs-Schwellenwerte:
 
@@ -50,7 +50,7 @@ Weitere Portale können später als eigene Adapter ergänzt werden, zum Beispiel
 
 1. Der Nutzer gibt einen Lebenslauf an (PDF, DOCX, Markdown oder Text).
 2. Die Software öffnet mit Playwright einen Browser.
-3. Die Software sucht auf Stepstone nach passenden Begriffen („KI Manager", „AI Transformation Manager", „KI Governance" u. a.).
+3. Die Software sucht auf Stepstone nach passenden Begriffen („KI Manager“, „AI Transformation Manager“, „KI Governance“ u. a.). Diese Begriffe sind über `SEARCH_TERMS` in der `.env` konfigurierbar (kommasepariert; leer = eingebaute Standardliste).
 4. Die Software liest Stellenanzeigen aus (Titel, Unternehmen, Standort, Aufgaben, Anforderungen, Benefits).
 5. Die Software vergleicht jede Stelle mit dem Lebenslauf.
 6. Die Software berechnet einen Score von 0 bis 100 – mit Begründung pro Kriterium.
@@ -61,7 +61,7 @@ Weitere Portale können später als eigene Adapter ergänzt werden, zum Beispiel
 
 ## Was die Automatisierung nicht tut
 
-- Sie **bewirbt sich nicht ohne Freigabe**. Formulare werden höchstens vorbereitet; der Versand verlangt eine wörtliche, interaktive Bestätigung („JA SENDEN").
+- Sie **bewirbt sich nicht ohne Freigabe**. Formulare werden höchstens vorbereitet; der Versand verlangt eine wörtliche, interaktive Bestätigung („JA SENDEN“).
 - Sie **erfindet keine Lebenslaufinhalte**. CV-Optimierungsvorschläge gewichten nur vorhandene Erfahrungen anders.
 - Sie **umgeht keine Sicherheitsmechanismen**. Erkennt sie Captchas oder Zugriffssperren, bricht sie sauber ab.
 - Sie **garantiert keine Einladung** zum Gespräch.

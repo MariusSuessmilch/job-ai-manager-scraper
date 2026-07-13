@@ -4,4 +4,4 @@ dist/
 data/jobs.sqlite
 data/exports/
 *.log
-cv/
+/cv/

@@ -5,13 +5,14 @@
  * Der Browser bleibt anschließend offen, damit der Nutzer prüfen kann.
  */
 import { loadConfig } from "../src/config/config.js";
-import { parseCv } from "../src/cv/parse-cv.js";
+import { parseCv, CvMissingError } from "../src/cv/parse-cv.js";
 import { openDatabase } from "../src/storage/sqlite.js";
 import { JobRepository } from "../src/storage/job-repository.js";
 import { PlaywrightClient } from "../src/browser/playwright-client.js";
 import { prefillApplicationForm, prepareApplicationDossier } from "../src/application/prepare-application.js";
 import { stepstoneSelectors as sel } from "../src/portals/stepstone/stepstone.selectors.js";
 import { logger } from "../src/utils/logger.js";
+import type { CvProfile, StoredJob } from "../src/types.js";
 import type { Page } from "playwright";
 
 const REVIEW_MINUTES = 10;
@@ -36,15 +37,52 @@ async function clickFirst(page: Page, selectors: string[]): Promise<boolean> {
   return false;
 }
 
-const config = loadConfig();
-const profile = await parseCv(process.env.CV_FILE_PATH || config.CV_FILE_PATH);
-const repo = new JobRepository(openDatabase(config.DATABASE_URL));
-const top = repo.listAll().filter((j) => j.score !== null)[0];
-if (!top) {
-  console.error("Keine bewerteten Jobs in der Datenbank. Zuerst `npm run scrape` ausführen.");
-  process.exit(1);
+/** Lädt den Lebenslauf oder bricht mit einem freundlichen Hinweis ab (analog zu src/index.ts). */
+async function loadCvOrExit(cvPath: string): Promise<CvProfile> {
+  try {
+    return await parseCv(cvPath);
+  } catch (err) {
+    if (err instanceof CvMissingError) {
+      console.error(`\n${err.message}\n`);
+      console.error(
+        "Führe `npm run setup` aus oder setze CV_FILE_PATH in der .env auf deine Lebenslauf-Datei (PDF, DOCX, MD oder TXT).",
+      );
+      process.exit(1);
+    }
+    throw err;
+  }
 }
-logger.info(`Top-Job (${top.score}/100): ${top.title} – ${top.company}`);
+
+const config = loadConfig();
+const profile = await loadCvOrExit(process.env.CV_FILE_PATH || config.CV_FILE_PATH);
+const repo = new JobRepository(openDatabase(config.DATABASE_URL));
+
+// Optionales Argument --job <id>: konkreten Job statt des Top-Jobs öffnen.
+const args = process.argv.slice(2);
+const jobFlagIndex = args.indexOf("--job");
+let top: StoredJob | undefined;
+if (jobFlagIndex !== -1) {
+  const raw = args[jobFlagIndex + 1];
+  const jobId = Number(raw);
+  if (!raw || !Number.isInteger(jobId)) {
+    console.error("Ungültige Job-ID nach --job. Erwartet eine ganze Zahl, z. B. --job 42.");
+    process.exit(1);
+  }
+  top = repo.listAll().find((j) => j.id === jobId);
+  if (!top) {
+    console.error(
+      `Kein Job mit ID ${jobId} gefunden. Verfügbare IDs zeigt \`npm run report\` oder der Web-Hub (\`npm run web\`).`,
+    );
+    process.exit(1);
+  }
+} else {
+  top = repo.listAll().filter((j) => j.score !== null)[0];
+  if (!top) {
+    console.error("Keine bewerteten Jobs in der Datenbank. Zuerst `npm run scrape` ausführen.");
+    process.exit(1);
+  }
+}
+logger.info(`Job (${top.score}/100): ${top.title} – ${top.company}`);
 logger.info(`URL: ${top.url}`);
 
 // 1. Dossier als Vorbereitung erzeugen
@@ -88,12 +126,15 @@ if (loginWall) {
 }
 
 // 4. Felder vorbereiten – NIEMALS absenden
-const filled = await prefillApplicationForm(formPage, {
-  firstName: "Jonas",
-  lastName: "Berger",
-  email: "jonas.berger@example.de",
-  phone: "+49 170 1234567",
-});
+// Eigene Bewerberdaten aus der .env verwenden, sonst Demodaten (mit Warnung).
+const useOwnData = Boolean(config.applicant.firstName && config.applicant.email);
+const applicant = useOwnData
+  ? config.applicant
+  : { firstName: "Jonas", lastName: "Berger", email: "jonas.berger@example.de", phone: "+49 170 1234567" };
+if (!useOwnData) {
+  logger.warn("Demodaten aktiv — APPLICANT_* in .env setzen für eigene Daten.");
+}
+const filled = await prefillApplicationForm(formPage, applicant);
 
 await formPage.screenshot({ path: "./data/exports/bewerbung-formular.png", fullPage: false });
 logger.info("Screenshot gespeichert: data/exports/bewerbung-formular.png");

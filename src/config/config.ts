@@ -18,10 +18,23 @@ const envSchema = z.object({
   REQUEST_DELAY_MS: z.coerce.number().optional().default(4000),
   DATABASE_URL: z.string().optional().default("./data/jobs.sqlite"),
   CV_FILE_PATH: z.string().optional().default(""),
+  // Suchbegriffe (kommasepariert); leer/nicht gesetzt → DEFAULT_SEARCH_TERMS.
+  SEARCH_TERMS: z.string().optional().default(""),
+  // Bewerberdaten – nur lokal fürs Vorbefüllen von Formularen, niemals automatisch versendet.
+  APPLICANT_FIRST_NAME: z.string().optional().default(""),
+  APPLICANT_LAST_NAME: z.string().optional().default(""),
+  APPLICANT_EMAIL: z.string().optional().default(""),
+  APPLICANT_PHONE: z.string().optional().default(""),
 });
 
 export type AppConfig = z.infer<typeof envSchema> & {
   searchTerms: string[];
+  applicant: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    phone: string;
+  };
 };
 
 export const DEFAULT_SEARCH_TERMS = [
@@ -41,5 +54,17 @@ export function loadConfig(): AppConfig {
   if (!parsed.success) {
     throw new Error(`Ungültige Konfiguration: ${parsed.error.message}`);
   }
-  return { ...parsed.data, searchTerms: DEFAULT_SEARCH_TERMS };
+  const searchTerms = parsed.data.SEARCH_TERMS.split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
+  return {
+    ...parsed.data,
+    searchTerms: searchTerms.length > 0 ? searchTerms : DEFAULT_SEARCH_TERMS,
+    applicant: {
+      firstName: parsed.data.APPLICANT_FIRST_NAME,
+      lastName: parsed.data.APPLICANT_LAST_NAME,
+      email: parsed.data.APPLICANT_EMAIL,
+      phone: parsed.data.APPLICANT_PHONE,
+    },
+  };
 }
