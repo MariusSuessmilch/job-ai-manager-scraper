@@ -10,6 +10,8 @@
     "report": "tsx src/index.ts report",
     "cv": "tsx src/index.ts cv",
     "web": "tsx src/web/server.ts",
+    "setup": "tsx scripts/setup.ts",
+    "prefill": "tsx scripts/prefill-live.ts",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"
   },
