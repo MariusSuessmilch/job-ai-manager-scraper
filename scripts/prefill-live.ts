@@ -5,13 +5,14 @@
  * Der Browser bleibt anschließend offen, damit der Nutzer prüfen kann.
  */
 import { loadConfig } from "../src/config/config.js";
-import { parseCv } from "../src/cv/parse-cv.js";
+import { parseCv, CvMissingError } from "../src/cv/parse-cv.js";
 import { openDatabase } from "../src/storage/sqlite.js";
 import { JobRepository } from "../src/storage/job-repository.js";
 import { PlaywrightClient } from "../src/browser/playwright-client.js";
 import { prefillApplicationForm, prepareApplicationDossier } from "../src/application/prepare-application.js";
 import { stepstoneSelectors as sel } from "../src/portals/stepstone/stepstone.selectors.js";
 import { logger } from "../src/utils/logger.js";
+import type { CvProfile, StoredJob } from "../src/types.js";
 import type { Page } from "playwright";
 
 const REVIEW_MINUTES = 10;
@@ -36,14 +37,30 @@ async function clickFirst(page: Page, selectors: string[]): Promise<boolean> {
   return false;
 }
 
+/** Lädt den Lebenslauf oder bricht mit einem freundlichen Hinweis ab (analog zu src/index.ts). */
+async function loadCvOrExit(cvPath: string): Promise<CvProfile> {
+  try {
+    return await parseCv(cvPath);
+  } catch (err) {
+    if (err instanceof CvMissingError) {
+      console.error(`\n${err.message}\n`);
+      console.error(
+        "Führe `npm run setup` aus oder setze CV_FILE_PATH in der .env auf deine Lebenslauf-Datei (PDF, DOCX, MD oder TXT).",
+      );
+      process.exit(1);
+    }
+    throw err;
+  }
+}
+
 const config = loadConfig();
-const profile = await parseCv(process.env.CV_FILE_PATH || config.CV_FILE_PATH);
+const profile = await loadCvOrExit(process.env.CV_FILE_PATH || config.CV_FILE_PATH);
 const repo = new JobRepository(openDatabase(config.DATABASE_URL));
 
 // Optionales Argument --job <id>: konkreten Job statt des Top-Jobs öffnen.
 const args = process.argv.slice(2);
 const jobFlagIndex = args.indexOf("--job");
-let top;
+let top: StoredJob | undefined;
 if (jobFlagIndex !== -1) {
   const raw = args[jobFlagIndex + 1];
   const jobId = Number(raw);

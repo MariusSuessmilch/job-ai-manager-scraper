@@ -65,7 +65,7 @@ async function runSetup(): Promise<void> {
   const ask: Prompt = (question) => rl.question(question);
 
   try {
-    console.log("KI-Job-Radar – Einrichtung. Enter übernimmt jeweils den Standard.\n");
+    console.log("job-ai-manager-scraper – Einrichtung. Enter übernimmt jeweils den Standard.\n");
 
     if (existsSync(envPath)) {
       const answer = (await ask(".env existiert bereits – überschreiben? (ja/nein): ")).trim().toLowerCase();
