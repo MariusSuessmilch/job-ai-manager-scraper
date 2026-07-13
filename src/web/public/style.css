@@ -314,6 +314,8 @@ tbody td { padding: 10px 12px; vertical-align: middle; }
 tr.row-incomplete { opacity: 0.82; }
 tr.row-incomplete td:first-child { box-shadow: inset 3px 0 0 var(--amber-dim); }
 
+.th-id, .cell-id { width: 1%; white-space: nowrap; }
+.cell-id { color: var(--faint); font-size: 12px; }
 .cell-company { color: var(--muted); font-size: 13px; }
 .cell-location { color: var(--muted); font-size: 12.5px; }
 .remote-note { display: block; color: var(--faint); font-size: 11px; }

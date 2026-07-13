@@ -31,12 +31,12 @@ export function buildMarkdownReport(jobs: StoredJob[]): string {
     return lines.join("\n");
   }
 
-  lines.push("| Score | Empfehlung | Jobtitel | Unternehmen | Standort | Portal | Link |");
-  lines.push("|---:|---|---|---|---|---|---|");
+  lines.push("| ID | Score | Empfehlung | Jobtitel | Unternehmen | Standort | Portal | Link |");
+  lines.push("|---:|---:|---|---|---|---|---|---|");
   for (const j of scored) {
     const loc = [j.location, j.remoteOption].filter(Boolean).join(" / ");
     lines.push(
-      `| ${j.score} | ${j.recommendation} | ${j.title} | ${j.company} | ${loc || "–"} | ${j.portal} | [Anzeige](${j.url}) |`,
+      `| ${j.id} | ${j.score} | ${j.recommendation} | ${j.title} | ${j.company} | ${loc || "–"} | ${j.portal} | [Anzeige](${j.url}) |`,
     );
   }
 
